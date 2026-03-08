@@ -1,10 +1,11 @@
+// COPY THIS TEXT AND SAVE AS: api/gemini.js
 export default async function handler(req, res) {
-    // Only allow POST requests from our frontend
+    // 1. Security Check: Only allow POST requests
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Method Not Allowed. Wave functions require POST.' });
     }
 
-    // Pull the highly secure hidden key from Vercel's Environment Variables
+    // 2. Pull the highly secure hidden key from Vercel's Environment Variables
     const apiKey = process.env.GEMINI_API_KEY;
     
     if (!apiKey) {
@@ -14,9 +15,10 @@ export default async function handler(req, res) {
         });
     }
 
-    // Unpack the user's prompt and the system instructions sent from the HTML frontend
+    // 3. Unpack the user's prompt and the system instructions sent from the HTML frontend
     const { prompt, systemInstructionText } = req.body;
 
+    // 4. THE FIX: Pointing specifically to the standard public model
     const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
 
     const payload = {
@@ -31,17 +33,21 @@ export default async function handler(req, res) {
             body: JSON.stringify(payload)
         });
 
+        const data = await response.json();
+
         if (!response.ok) {
-            const errorData = await response.json();
-            return res.status(response.status).json({ error: 'Wave API Error', details: errorData });
+            return res.status(response.status).json({ 
+                error: 'Google API Error', 
+                details: data.error?.message || 'Unknown Error' 
+            });
         }
 
-        const data = await response.json();
         const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Error decoding wave pattern.";
         
-        // Send the successful transmission back to the frontend
+        // 5. Send the successful transmission back to the frontend
         res.status(200).json({ text });
 
     } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error', message: error.message });
+        res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
+}
