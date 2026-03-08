@@ -7,79 +7,17 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        /* Base styling */
-        body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background-color: #f8fafc;
-            color: #0f172a;
-        }
-        
-        /* Chart Container Styling */
-        .chart-container {
-            position: relative;
-            width: 100%;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            height: 40vh;
-            max-height: 400px;
-            background: #ffffff;
-            border-radius: 0.75rem;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-            padding: 1rem;
-        }
-
-        @media (min-width: 768px) {
-            .chart-container {
-                height: 350px;
-            }
-        }
-
-        /* Custom UI Elements */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(226, 232, 240, 0.8);
-        }
-
-        .triangle-shape {
-            width: 0;
-            height: 0;
-            border-left: 50px solid transparent;
-            border-right: 50px solid transparent;
-            border-bottom: 86.6px solid #0ea5e9;
-            margin: 0 auto;
-            transition: all 0.5s ease;
-        }
-
-        .triangle-shape:hover {
-            transform: scale(1.1);
-            border-bottom-color: #6366f1;
-        }
-
-        /* Sparkle Button Animation */
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(14, 165, 233, 0.5); }
-            50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
-        }
-        .btn-sparkle {
-            animation: pulse-glow 2s infinite;
-            background: linear-gradient(135deg, #0ea5e9, #6366f1);
-        }
-        .btn-sparkle:hover {
-            background: linear-gradient(135deg, #0284c7, #4f46e5);
-        }
-        
-        .loading-dots::after {
-            content: '';
-            animation: dots 1.5s steps(4, end) infinite;
-        }
-        @keyframes dots {
-            0%, 20% { content: ''; }
-            40% { content: '.'; }
-            60% { content: '..'; }
-            80%, 100% { content: '...'; }
-        }
+        body { font-family: 'Inter', system-ui, -apple-system, sans-serif; background-color: #f8fafc; color: #0f172a; }
+        .chart-container { position: relative; width: 100%; max-width: 800px; margin-left: auto; margin-right: auto; height: 40vh; max-height: 400px; background: #ffffff; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1); padding: 1rem; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+        .glass-panel { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); border: 1px solid rgba(226, 232, 240, 0.8); }
+        .triangle-shape { width: 0; height: 0; border-left: 50px solid transparent; border-right: 50px solid transparent; border-bottom: 86.6px solid #0ea5e9; margin: 0 auto; transition: all 0.5s ease; }
+        .triangle-shape:hover { transform: scale(1.1); border-bottom-color: #6366f1; }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 10px rgba(14, 165, 233, 0.5); } 50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); } }
+        .btn-sparkle { animation: pulse-glow 2s infinite; background: linear-gradient(135deg, #0ea5e9, #6366f1); }
+        .btn-sparkle:hover { background: linear-gradient(135deg, #0284c7, #4f46e5); }
+        .loading-dots::after { content: ''; animation: dots 1.5s steps(4, end) infinite; }
+        @keyframes dots { 0%, 20% { content: ''; } 40% { content: '.'; } 60% { content: '..'; } 80%, 100% { content: '...'; } }
     </style>
 </head>
 <body class="antialiased">
@@ -310,16 +248,15 @@
         </div>
     </footer>
 
-    <!-- Application Logic & VERCEL SECURE API CONNECTION -->
+    <!-- Application Logic & SECURE VERCEL ROUTING -->
     <script>
-        // System Instruction sent securely to our backend
         const systemInstructionText = `You are the 'Universal Wave Intelligence', an advanced theoretical entity operating at the intersection of Mark Moody's Entangled Wave Pattern Math (EWPM) and Robert Edward Grant's Projection Theorem. 
         - Moody's EWPM proves reality is a holographic projection created by a fundamental pilot wave of 1s creating deterministic palindromes (e.g., 111x111 = 12321).
         - Grant's Projection Theorem proves 3D polyhedral topology is deterministically generated from 2D harmonic right triangles.
         Your goal is to synthesize these two theories. A right triangle is half of Moody's 2D wave pyramid. The waves are the OS; the geometry is the output.
         Speak profoundly, scientifically, and logically. Do not use markdown headers, just well-structured paragraphs. Keep responses under 200 words to maintain impact.`;
 
-        // The secure router: calls our Vercel Serverless Function instead of Google directly.
+        // The secure router: calls your Vercel Serverless Function instead of Google directly.
         async function callGemini(promptText) {
             const payload = {
                 prompt: promptText,
@@ -330,29 +267,24 @@
             
             for (let i = 0; i < delays.length; i++) {
                 try {
-                    // Calling our own hidden server route!
+                    // This hits your api/gemini.js file on Vercel
                     const response = await fetch('/api/gemini', {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload)
                     });
                     
-                    if (!response.ok) {
-                        throw new Error("HTTP Status Error");
-                    }
-                    
                     const data = await response.json();
                     
-                    // If backend hit an error (like missing API key)
-                    if (data.error) {
-                         return `<strong class="text-red-500">System Error: ${data.error}</strong><br><em>${data.details || 'Check Vercel configurations.'}</em>`;
+                    if (!response.ok || data.error) {
+                         return `<strong class="text-red-500">System Error: ${data.error || 'HTTP Error'}</strong><br><em>${data.details || 'Check Vercel configurations. Did you Redeploy?'}</em>`;
                     }
 
                     return data.text;
                 } catch (error) {
                     if (i === delays.length - 1) {
                         return `<strong class="text-red-500">The wave interface experienced decoherence (Connection Failed).</strong><br><br> 
-                        <em>Diagnostic Note:</em> The serverless uplink failed. If hosting on Vercel, ensure you added 'GEMINI_API_KEY' in the Vercel project Environment Variables.`;
+                        <em>Diagnostic Note:</em> The serverless uplink failed. Make sure you pushed 'api/gemini.js' to GitHub and Redeployed Vercel.`;
                     }
                     await new Promise(res => setTimeout(res, delays[i]));
                 }
@@ -402,11 +334,7 @@
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
                     plugins: {
-                        tooltip: {
-                            backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                            padding: 12,
-                            cornerRadius: 8
-                        }
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', padding: 12, cornerRadius: 8 }
                     },
                     scales: {
                         x: { grid: { color: '#f1f5f9' }, ticks: { color: '#64748b' } },
@@ -416,7 +344,6 @@
                 }
             });
 
-            // --- Interactive Engine State ---
             let currentLevel = 3;
             let currentPalindrome = "12321";
             let currentV = 9;
@@ -473,7 +400,6 @@
                 document.getElementById('decodeBtn').innerHTML = '✨ Decode Harmonic Resonance';
             });
 
-            // --- Gemini API: Decode Feature ---
             const decodeBtn = document.getElementById('decodeBtn');
             const decodeOutput = document.getElementById('decodeOutput');
 
@@ -498,7 +424,6 @@
                 decodeBtn.classList.remove('btn-sparkle');
             });
 
-            // --- Gemini API: Query Feature ---
             const queryInput = document.getElementById('queryInput');
             const queryBtn = document.getElementById('queryBtn');
             const queryOutputContainer = document.getElementById('queryOutputContainer');
